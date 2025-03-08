@@ -1,10 +1,10 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import CategoryCard from '@/components/CategoryCard';
 import ProductCard from '@/components/ProductCard';
+import ChatWithAI from '@/components/ChatWithAI';
 import { categories, getFeaturedProducts, getFarmerFeatures } from '@/data/categoryData';
 import { Link } from 'react-router-dom';
 
@@ -101,6 +101,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+      
+      {/* AI Chat Assistant */}
+      <ChatWithAI standalone={true} />
       
       <Footer />
     </div>

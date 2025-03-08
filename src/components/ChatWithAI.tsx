@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send } from 'lucide-react';
+import { Send, X, MessageCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface ChatWithAIProps {
-  productName: string;
-  categoryName: string;
-  farmerName: string;
+  productName?: string;
+  categoryName?: string;
+  farmerName?: string;
+  standalone?: boolean;
 }
 
 interface Message {
@@ -19,25 +22,27 @@ interface Vegetable {
   name: string;
   category: string;
   // Add other properties based on your API response
-  // Example:
-  // price: number;
-  // imageUrl: string;
 }
 
 const ChatWithAI: React.FC<ChatWithAIProps> = ({
-  productName,
-  categoryName,
-  farmerName,
+  productName = '',
+  categoryName = '',
+  farmerName = '',
+  standalone = false,
 }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      text: `Hi there! I can help you with information about ${productName} from ${farmerName}. What would you like to know?`,
+      text: standalone 
+        ? 'Hello! How can I assist you today with AgriRoad?' 
+        : `Hi there! I can help you with information about ${productName} from ${farmerName}. What would you like to know?`,
       isUser: false,
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [vegetableData, setVegetableData] = useState<Vegetable[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchVegetableData = async () => {
@@ -58,6 +63,14 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
     fetchVegetableData();
   }, []);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
@@ -68,9 +81,11 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
     setIsLoading(true);
 
     try {
-      const contextQuery = `${input} (Context: Product: ${productName}, Category: ${categoryName}, Farmer: ${farmerName}, Vegetables Data: ${JSON.stringify(
-        vegetableData
-      )})`;
+      const contextQuery = standalone 
+        ? input 
+        : `${input} (Context: Product: ${productName}, Category: ${categoryName}, Farmer: ${farmerName}, Vegetables Data: ${JSON.stringify(
+          vegetableData
+        )})`;
 
       const response = await fetch(
         `https://agriroad-chat-tybs.onrender.com/getresponse?input=${encodeURIComponent(
@@ -124,9 +139,9 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
     }
   };
 
-  return (
+  const chatContent = (
     <div className="flex flex-col h-[400px]">
-      <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+      <div className="flex-1 overflow-y-auto mb-4 space-y-4 p-4">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -148,14 +163,15 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 p-4 border-t">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about this product..."
+          placeholder="Type your message..."
           className="flex-1"
         />
         <Button
@@ -168,6 +184,39 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
       </div>
     </div>
   );
+
+  if (standalone) {
+    return (
+      <>
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 bg-agri-green hover:bg-agri-dark-green rounded-full w-14 h-14 shadow-lg flex items-center justify-center"
+          size="icon"
+        >
+          <MessageCircle className="h-6 w-6 text-white" />
+        </Button>
+
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden">
+            <DialogHeader className="bg-agri-green text-white p-4 flex flex-row items-center justify-between">
+              <DialogTitle>AgriRoad AI Assistant</DialogTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+                className="h-8 w-8 text-white hover:bg-agri-dark-green hover:text-white rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogHeader>
+            {chatContent}
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
+  return chatContent;
 };
 
 export default ChatWithAI;
