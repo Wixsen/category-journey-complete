@@ -9,6 +9,7 @@ import Shop from "./pages/Shop";
 import Contact from "./pages/Contact";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
+import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./contexts/CartContext";
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
             <Route path="/product/:categoryId/:productId" element={<ProductPage />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -9,8 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Minus, Plus, Truck, ShieldCheck, Leaf, MapPin } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { Input } from '@/components/ui/input';
 import ChatWithAI from '@/components/ChatWithAI';
+import ProductImageSlider from '@/components/ProductImageSlider';
 
 const ProductPage = () => {
   const { categoryId, productId } = useParams<{ categoryId: string; productId: string }>();
@@ -27,7 +26,6 @@ const ProductPage = () => {
     ? getRecommendedProducts(categoryId, productId) 
     : [];
   
-  // Get unique farmers for this category
   const farmers = productId && categoryId
     ? [...new Set(products
         .filter(p => p.categoryId === categoryId)
@@ -75,7 +73,6 @@ const ProductPage = () => {
   };
   
   const handleAddToCart = () => {
-    // Actually add to cart using the context
     addToCart(product, quantity);
   };
 
@@ -87,7 +84,6 @@ const ProductPage = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center text-sm text-gray-600">
           <Link to="/" className="hover:text-agri-green">Home</Link>
@@ -100,20 +96,13 @@ const ProductPage = () => {
         </div>
       </div>
       
-      {/* Product Details */}
       <section className="py-8 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Product Image */}
-            <div className="rounded-lg overflow-hidden border border-gray-100 animate-fade-in">
-              <img 
-                src={product.image} 
-                alt={product.name} 
-                className="w-full h-full object-cover"
-              />
+            <div className="animate-fade-in">
+              <ProductImageSlider mainImage={product.image} productName={product.name} />
             </div>
             
-            {/* Product Info */}
             <div className="animate-fade-up">
               <div className="flex flex-wrap gap-2 mb-4">
                 {product.isOrganic && (
@@ -220,7 +209,11 @@ const ProductPage = () => {
                 
                 {showChat && (
                   <div className="mt-4 p-4 border border-gray-200 rounded-lg">
-                    <ChatWithAI productName={product.name} categoryName={category.name} farmerName={selectedFarmer} />
+                    <ChatWithAI 
+                      productName={product.name} 
+                      categoryName={category.name} 
+                      farmerName={selectedFarmer} 
+                    />
                   </div>
                 )}
               </div>
@@ -244,7 +237,6 @@ const ProductPage = () => {
         </div>
       </section>
       
-      {/* Recommended Products */}
       {recommendedProducts.length > 0 && (
         <section className="py-12 bg-agri-beige">
           <div className="container mx-auto px-4">

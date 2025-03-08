@@ -16,9 +16,8 @@ const CartDialog: React.FC<CartDialogProps> = ({ open, onOpenChange }) => {
   const navigate = useNavigate();
   
   const handleCheckout = () => {
-    // For now, just close the dialog
     onOpenChange(false);
-    // Here you would navigate to a checkout page in a real app
+    navigate('/checkout');
   };
   
   const handleProductClick = (categoryId: string, productId: string) => {
