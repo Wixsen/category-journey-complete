@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send } from 'lucide-react';
@@ -15,54 +14,103 @@ interface Message {
   isUser: boolean;
 }
 
+interface Vegetable {
+  _id: string;
+  name: string;
+  category: string;
+  // Add other properties based on your API response
+  // Example:
+  // price: number;
+  // imageUrl: string;
+}
+
 const ChatWithAI: React.FC<ChatWithAIProps> = ({
   productName,
   categoryName,
-  farmerName
+  farmerName,
 }) => {
   const [messages, setMessages] = useState<Message[]>([
-    { 
-      text: `Hi there! I can help you with information about ${productName} from ${farmerName}. What would you like to know?`, 
-      isUser: false 
-    }
+    {
+      text: `Hi there! I can help you with information about ${productName} from ${farmerName}. What would you like to know?`,
+      isUser: false,
+    },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [vegetableData, setVegetableData] = useState<Vegetable[]>([]);
+
+  useEffect(() => {
+    const fetchVegetableData = async () => {
+      try {
+        const response = await fetch(
+          'https://agriroad-chat-tybs.onrender.com/user/allproducts?category=Vegetables'
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch vegetable data');
+        }
+        const data: Vegetable[] = await response.json();
+        setVegetableData(data);
+      } catch (error) {
+        console.error('Error fetching vegetable data:', error);
+      }
+    };
+
+    fetchVegetableData();
+  }, []);
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
-    // Add user message
     const userMessage = { text: input, isUser: true };
-    setMessages(prev => [...prev, userMessage]);
-    
-    // Clear input and set loading
+    setMessages((prev) => [...prev, userMessage]);
+
     setInput('');
     setIsLoading(true);
 
     try {
-      // Prepare context for the AI
-      const contextQuery = `${input} (Context: Product: ${productName}, Category: ${categoryName}, Farmer: ${farmerName})`;
-      
-      // Make API call
-      const response = await fetch(`https://agriroad-chat-tybs.onrender.com/getresponse?input=${encodeURIComponent(contextQuery)}`);
-      
+      const contextQuery = `${input} (Context: Product: ${productName}, Category: ${categoryName}, Farmer: ${farmerName}, Vegetables Data: ${JSON.stringify(
+        vegetableData
+      )})`;
+
+      const response = await fetch(
+        `https://agriroad-chat-tybs.onrender.com/getresponse?input=${encodeURIComponent(
+          contextQuery
+        )}`
+      );
+
       if (!response.ok) {
         throw new Error('Failed to get response from AI');
       }
-      
-      const data = await response.json();
-      
-      // Add AI response
-      setMessages(prev => [
-        ...prev, 
-        { text: data.response || "Sorry, I couldn't process your request.", isUser: false }
-      ]);
+
+      const contentType = response.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: data.response || "Sorry, I couldn't process your request.",
+            isUser: false,
+          },
+        ]);
+      } else {
+        const text = await response.text();
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: text || "Sorry, I couldn't process your request.",
+            isUser: false,
+          },
+        ]);
+      }
     } catch (error) {
       console.error('Error fetching AI response:', error);
-      setMessages(prev => [
-        ...prev, 
-        { text: "Sorry, there was an error connecting to the AI service. Please try again later.", isUser: false }
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: 'Sorry, there was an error connecting to the AI service. Please try again later.',
+          isUser: false,
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -101,7 +149,7 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
           </div>
         )}
       </div>
-      
+
       <div className="flex gap-2">
         <Input
           value={input}
@@ -110,8 +158,8 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
           placeholder="Ask about this product..."
           className="flex-1"
         />
-        <Button 
-          onClick={handleSendMessage} 
+        <Button
+          onClick={handleSendMessage}
           disabled={isLoading || !input.trim()}
           className="bg-agri-green hover:bg-agri-dark-green"
         >
