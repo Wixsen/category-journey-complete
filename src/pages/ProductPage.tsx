@@ -4,23 +4,41 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { getProductById, getCategoryById, getRecommendedProducts } from '@/data/categoryData';
+import { getProductById, getCategoryById, getRecommendedProducts, products } from '@/data/categoryData';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Minus, Plus, Truck, ShieldCheck, Leaf, MapPin } from 'lucide-react';
-import { toast } from "@/components/ui/use-toast";
+import { useCart } from '@/contexts/CartContext';
+import { Input } from '@/components/ui/input';
+import ChatWithAI from '@/components/ChatWithAI';
 
 const ProductPage = () => {
   const { categoryId, productId } = useParams<{ categoryId: string; productId: string }>();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   
   const [quantity, setQuantity] = useState(1);
+  const [selectedFarmer, setSelectedFarmer] = useState('');
+  const [showChat, setShowChat] = useState(false);
   
   const product = productId ? getProductById(productId) : undefined;
   const category = categoryId ? getCategoryById(categoryId) : undefined;
   const recommendedProducts = productId && categoryId 
     ? getRecommendedProducts(categoryId, productId) 
     : [];
+  
+  // Get unique farmers for this category
+  const farmers = productId && categoryId
+    ? [...new Set(products
+        .filter(p => p.categoryId === categoryId)
+        .map(p => p.farmer))]
+    : [];
+
+  useEffect(() => {
+    if (product && !selectedFarmer) {
+      setSelectedFarmer(product.farmer);
+    }
+  }, [product]);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,10 +75,12 @@ const ProductPage = () => {
   };
   
   const handleAddToCart = () => {
-    toast({
-      title: "Added to cart",
-      description: `${quantity} × ${product.name} added to your cart`,
-    });
+    // Actually add to cart using the context
+    addToCart(product, quantity);
+  };
+
+  const toggleChat = () => {
+    setShowChat(!showChat);
   };
   
   return (
@@ -110,7 +130,7 @@ const ProductPage = () => {
               
               <div className="flex items-center mb-4">
                 <span className="text-2xl font-bold text-agri-green">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-500 ml-2">
                   per item
@@ -121,9 +141,20 @@ const ProductPage = () => {
               
               <div className="flex items-center mb-4">
                 <MapPin className="h-5 w-5 text-agri-green mr-2" />
-                <span className="text-gray-700">
-                  From <span className="font-medium">{product.farmer}</span> in {product.location}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-gray-700 mb-2">Select Farmer:</span>
+                  <select 
+                    value={selectedFarmer}
+                    onChange={(e) => setSelectedFarmer(e.target.value)}
+                    className="p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-agri-green"
+                  >
+                    {farmers.map(farmer => (
+                      <option key={farmer} value={farmer}>{farmer} - {
+                        products.find(p => p.farmer === farmer)?.location
+                      }</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               
               <div className="border-t border-b border-gray-100 py-4 mb-6">
@@ -177,6 +208,22 @@ const ProductPage = () => {
               >
                 Add to Cart
               </Button>
+              
+              <div className="mt-6">
+                <Button 
+                  variant="outline" 
+                  className="w-full border-agri-green text-agri-green hover:bg-agri-green hover:text-white"
+                  onClick={toggleChat}
+                >
+                  {showChat ? "Close Chat" : "Chat with AI about this product"}
+                </Button>
+                
+                {showChat && (
+                  <div className="mt-4 p-4 border border-gray-200 rounded-lg">
+                    <ChatWithAI productName={product.name} categoryName={category.name} farmerName={selectedFarmer} />
+                  </div>
+                )}
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
                 <div className="flex items-center">
