@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -10,6 +11,7 @@ import { ChevronRight, Minus, Plus, Truck, ShieldCheck, Leaf, MapPin } from 'luc
 import { useCart } from '@/contexts/CartContext';
 import ChatWithAI from '@/components/ChatWithAI';
 import ProductImageSlider from '@/components/ProductImageSlider';
+import FarmerProfile from '@/components/FarmerProfile';
 
 const ProductPage = () => {
   const { categoryId, productId } = useParams<{ categoryId: string; productId: string }>();
@@ -19,6 +21,7 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedFarmer, setSelectedFarmer] = useState('');
   const [showChat, setShowChat] = useState(false);
+  const [showFarmerProfile, setShowFarmerProfile] = useState(false);
   
   const product = productId ? getProductById(productId) : undefined;
   const category = categoryId ? getCategoryById(categoryId) : undefined;
@@ -48,8 +51,8 @@ const ProductPage = () => {
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800">Product not found</h1>
-            <p className="text-gray-600 mt-2">The product you're looking for doesn't exist.</p>
+            <h1 className="text-2xl font-bold">Product not found</h1>
+            <p className="text-muted-foreground mt-2">The product you're looking for doesn't exist.</p>
             <Link to="/" className="mt-6 inline-block text-agri-green hover:underline">
               Return to home
             </Link>
@@ -78,14 +81,25 @@ const ProductPage = () => {
 
   const toggleChat = () => {
     setShowChat(!showChat);
+    setShowFarmerProfile(false);
+  };
+  
+  const toggleFarmerProfile = () => {
+    setShowFarmerProfile(!showFarmerProfile);
+    setShowChat(false);
+  };
+
+  const handleFarmerChange = (farmer: string) => {
+    setSelectedFarmer(farmer);
+    setShowFarmerProfile(true);
   };
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
       <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-muted-foreground">
           <Link to="/" className="hover:text-agri-green">Home</Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <Link to="/shop" className="hover:text-agri-green">Shop</Link>
@@ -96,7 +110,7 @@ const ProductPage = () => {
         </div>
       </div>
       
-      <section className="py-8 bg-white">
+      <section className="py-8 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             <div className="animate-fade-in">
@@ -110,45 +124,60 @@ const ProductPage = () => {
                     <Leaf className="h-3 w-3 mr-1" /> Organic
                   </Badge>
                 )}
-                <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-200">
+                <Badge className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
                   {category.name}
                 </Badge>
               </div>
               
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground mb-4">{product.name}</h1>
               
               <div className="flex items-center mb-4">
                 <span className="text-2xl font-bold text-agri-green">
                   ₹{product.price.toFixed(2)}
                 </span>
-                <span className="text-sm text-gray-500 ml-2">
+                <span className="text-sm text-muted-foreground ml-2">
                   per item
                 </span>
               </div>
               
-              <p className="text-gray-600 mb-6">{product.description}</p>
+              <p className="text-foreground mb-6">{product.description}</p>
               
               <div className="flex items-center mb-4">
                 <MapPin className="h-5 w-5 text-agri-green mr-2" />
-                <div className="flex flex-col">
-                  <span className="text-gray-700 mb-2">Select Farmer:</span>
-                  <select 
-                    value={selectedFarmer}
-                    onChange={(e) => setSelectedFarmer(e.target.value)}
-                    className="p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-agri-green"
-                  >
-                    {farmers.map(farmer => (
-                      <option key={farmer} value={farmer}>{farmer} - {
-                        products.find(p => p.farmer === farmer)?.location
-                      }</option>
-                    ))}
-                  </select>
+                <div className="flex flex-col w-full">
+                  <span className="text-foreground mb-2">Select Farmer:</span>
+                  <div className="flex gap-2 items-center">
+                    <select 
+                      value={selectedFarmer}
+                      onChange={(e) => handleFarmerChange(e.target.value)}
+                      className="p-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-agri-green flex-1"
+                    >
+                      {farmers.map(farmer => (
+                        <option key={farmer} value={farmer}>{farmer} - {
+                          products.find(p => p.farmer === farmer)?.location
+                        }</option>
+                      ))}
+                    </select>
+                    <Button 
+                      variant="outline"
+                      onClick={toggleFarmerProfile}
+                      className="border-agri-green text-agri-green hover:bg-agri-green hover:text-white"
+                    >
+                      {showFarmerProfile ? "Hide Profile" : "View Profile"}
+                    </Button>
+                  </div>
                 </div>
               </div>
               
-              <div className="border-t border-b border-gray-100 py-4 mb-6">
+              {showFarmerProfile && (
+                <div className="mb-6">
+                  <FarmerProfile farmerName={selectedFarmer} />
+                </div>
+              )}
+              
+              <div className="border-t border-b border-border py-4 mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-700">Availability:</span>
+                  <span className="text-foreground">Availability:</span>
                   <span className={`font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                     {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
                   </span>
@@ -156,7 +185,7 @@ const ProductPage = () => {
               </div>
               
               <div className="mb-6">
-                <label htmlFor="quantity" className="block text-gray-700 mb-2">
+                <label htmlFor="quantity" className="block text-foreground mb-2">
                   Quantity:
                 </label>
                 <div className="flex">
@@ -165,7 +194,7 @@ const ProductPage = () => {
                     size="icon" 
                     onClick={handleDecreaseQuantity} 
                     disabled={quantity <= 1}
-                    className="border border-gray-200"
+                    className="border border-input"
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
@@ -174,7 +203,7 @@ const ProductPage = () => {
                     id="quantity" 
                     value={quantity} 
                     onChange={(e) => setQuantity(Math.min(parseInt(e.target.value) || 1, product.stock))} 
-                    className="w-16 text-center border-t border-b border-gray-200 focus:outline-none py-2" 
+                    className="w-16 text-center border-t border-b border-input focus:outline-none py-2 bg-background text-foreground" 
                     min="1" 
                     max={product.stock}
                   />
@@ -183,7 +212,7 @@ const ProductPage = () => {
                     size="icon" 
                     onClick={handleIncreaseQuantity} 
                     disabled={quantity >= product.stock}
-                    className="border border-gray-200"
+                    className="border border-input"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -208,7 +237,7 @@ const ProductPage = () => {
                 </Button>
                 
                 {showChat && (
-                  <div className="mt-4 p-4 border border-gray-200 rounded-lg">
+                  <div className="mt-4 p-4 border border-border rounded-lg bg-card">
                     <ChatWithAI 
                       productName={product.name} 
                       categoryName={category.name} 
@@ -221,15 +250,15 @@ const ProductPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
                 <div className="flex items-center">
                   <Truck className="h-5 w-5 text-agri-green mr-2" />
-                  <span className="text-sm text-gray-600">Fast Delivery</span>
+                  <span className="text-sm text-muted-foreground">Fast Delivery</span>
                 </div>
                 <div className="flex items-center">
                   <ShieldCheck className="h-5 w-5 text-agri-green mr-2" />
-                  <span className="text-sm text-gray-600">Quality Guaranteed</span>
+                  <span className="text-sm text-muted-foreground">Quality Guaranteed</span>
                 </div>
                 <div className="flex items-center">
                   <Leaf className="h-5 w-5 text-agri-green mr-2" />
-                  <span className="text-sm text-gray-600">Sustainably Grown</span>
+                  <span className="text-sm text-muted-foreground">Sustainably Grown</span>
                 </div>
               </div>
             </div>
@@ -238,9 +267,9 @@ const ProductPage = () => {
       </section>
       
       {recommendedProducts.length > 0 && (
-        <section className="py-12 bg-agri-beige">
+        <section className="py-12 bg-secondary">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">You May Also Like</h2>
+            <h2 className="text-2xl font-bold mb-8 text-foreground">You May Also Like</h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {recommendedProducts.map((product) => (

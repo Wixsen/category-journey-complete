@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingCart, LogOut } from 'lucide-react';
@@ -6,7 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 import SearchDialog from './SearchDialog';
 import CartDialog from './CartDialog';
 import SignInDialog from './SignInDialog';
-import { set } from 'date-fns';
+import { ThemeToggle } from './ThemeToggle';
 
 const Navbar = () => {
   const location = useLocation();
@@ -25,20 +26,17 @@ const Navbar = () => {
     localStorage.removeItem("password");
     localStorage.removeItem("aadhar");
     setIsSignedIn(false);
-    // Reload the page to ensure the navbar updates correctly.
-  
   };
 
   useEffect(() => {
     const checkSignInStatus = () => {
       if (localStorage.getItem("createAccountData")){
-
         if (localStorage.getItem("password") || localStorage.getItem("aadhar")) {
           setIsSignedIn(false);
         } else {
           setIsSignedIn(true);
         }
-      }else{
+      } else {
         setIsSignedIn(false);
       }
     };
@@ -46,15 +44,15 @@ const Navbar = () => {
     checkSignInStatus();
     
     // Listen for storage changes to handle sign-in/sign-out from other tabs/windows
-      window.addEventListener('storage', checkSignInStatus);
+    window.addEventListener('storage', checkSignInStatus);
 
-      return () => {
+    return () => {
       window.removeEventListener('storage', checkSignInStatus);
     };
   }, []);
 
   return (
-    <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
+    <header className="w-full bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <h1 className="text-xl sm:text-2xl font-bold text-agri-green">AgriRoad</h1>
@@ -73,10 +71,12 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          
           <Button
             variant="ghost"
             size="icon"
-            className="text-gray-700 hover:text-agri-green"
+            className="text-foreground hover:text-agri-green"
             onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" />
@@ -85,7 +85,7 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-gray-700 hover:text-agri-green relative"
+            className="text-foreground hover:text-agri-green relative"
             onClick={() => setCartOpen(true)}
           >
             <ShoppingCart className="h-5 w-5" />
