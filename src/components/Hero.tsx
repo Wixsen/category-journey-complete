@@ -14,7 +14,7 @@ const Hero = () => {
   return (
     <section className="relative w-full h-[70vh] overflow-hidden bg-gray-900">
       <img 
-        src="/lovable-uploads/c0e90dd4-5b52-4269-9c2a-dd7c28d192fe.png" 
+        src="https://images2.imgbox.com/f6/f6/yFHjkzUq_o.jpg" 
         alt="Agricultural field with crops" 
         className="absolute inset-0 w-full h-full object-cover"
       />
