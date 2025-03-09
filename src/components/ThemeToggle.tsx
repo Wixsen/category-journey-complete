@@ -11,7 +11,8 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="text-gray-700 dark:text-gray-200 hover:text-agri-green dark:hover:text-agri-light-green"
+      className="text-foreground hover:text-primary dark:hover:text-primary"
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
     >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />

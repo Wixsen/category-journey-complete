@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, MapPin, Award, ThumbsUp, User } from 'lucide-react';
+import { Star, MapPin, Award, ThumbsUp, User, Calendar } from 'lucide-react';
 
 interface FarmerReview {
   id: number;
@@ -111,7 +111,7 @@ const FarmerProfile: React.FC<FarmerProfileProps> = ({ farmerName }) => {
   return (
     <div className="animate-fade-in bg-card rounded-lg shadow-md overflow-hidden border border-border">
       <div className="md:flex">
-        <div className="md:w-1/3">
+        <div className="md:w-1/3 max-h-64 md:max-h-none">
           <img 
             src={farmerData.image} 
             alt={farmerData.farmer} 
@@ -121,18 +121,21 @@ const FarmerProfile: React.FC<FarmerProfileProps> = ({ farmerName }) => {
         <div className="p-6 md:w-2/3">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-2xl font-semibold text-foreground">{farmerData.farmer}</h3>
-            <div className="flex items-center bg-agri-green/10 text-agri-green px-3 py-1 rounded-full">
-              <Star className="h-4 w-4 fill-agri-green text-agri-green mr-1" />
+            <div className="flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full">
+              <Star className="h-4 w-4 fill-primary text-primary mr-1" />
               <span className="font-medium">{farmerData.rating.toFixed(1)}</span>
             </div>
           </div>
           
-          <div className="flex items-center text-muted-foreground mb-4">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span>{farmerData.location}</span>
-            <span className="mx-2">•</span>
-            <Award className="h-4 w-4 mr-1" />
-            <span>Since {farmerData.since}</span>
+          <div className="flex flex-wrap gap-2 text-muted-foreground mb-4">
+            <div className="flex items-center">
+              <MapPin className="h-4 w-4 mr-1" />
+              <span>{farmerData.location}</span>
+            </div>
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mx-1" />
+              <span>Since {farmerData.since}</span>
+            </div>
           </div>
           
           <p className="text-foreground mb-4">{farmerData.about}</p>
@@ -155,7 +158,7 @@ const FarmerProfile: React.FC<FarmerProfileProps> = ({ farmerName }) => {
               <h4 className="text-sm font-medium text-foreground mb-2">Certifications</h4>
               <div className="flex flex-wrap gap-2">
                 {farmerData.certifications.map((certification, index) => (
-                  <span key={index} className="bg-agri-green/10 text-agri-green px-3 py-1 rounded-full text-sm">
+                  <span key={index} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
                     {certification}
                   </span>
                 ))}
@@ -169,7 +172,7 @@ const FarmerProfile: React.FC<FarmerProfileProps> = ({ farmerName }) => {
       {farmerData.reviews.length > 0 && (
         <div className="border-t border-border p-6">
           <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-            <ThumbsUp className="h-5 w-5 mr-2 text-agri-green" />
+            <ThumbsUp className="h-5 w-5 mr-2 text-primary" />
             Customer Reviews
           </h4>
           
@@ -185,7 +188,7 @@ const FarmerProfile: React.FC<FarmerProfileProps> = ({ farmerName }) => {
                     {[...Array(5)].map((_, i) => (
                       <Star 
                         key={i} 
-                        className={`h-4 w-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
+                        className={`h-4 w-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`} 
                       />
                     ))}
                   </div>
