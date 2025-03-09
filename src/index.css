@@ -39,23 +39,23 @@
   }
 
   .dark {
-    --background: 215 28% 17%;
+    --background: 216 28% 12%;
     --foreground: 210 40% 98%;
 
-    --card: 216 28% 20%;
+    --card: 216 28% 16%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 216 28% 20%;
+    --popover: 216 28% 16%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 142 58% 45%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 25%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 22%;
-    --muted-foreground: 215 20.2% 75%;
+    --muted-foreground: 210 20.2% 75%;
 
     --accent: 217.2 32.6% 25%;
     --accent-foreground: 210 40% 98%;
@@ -102,7 +102,7 @@
   }
   
   .category-title {
-    @apply text-center py-4 font-medium;
+    @apply text-center py-4 font-medium text-foreground;
   }
   
   .product-card {
@@ -118,11 +118,11 @@
   }
   
   .nav-link {
-    @apply relative px-3 py-2 text-foreground font-medium transition-colors hover:text-agri-green;
+    @apply relative px-3 py-2 text-foreground font-medium transition-colors hover:text-agri-green dark:hover:text-agri-light-green;
   }
   
   .nav-link::after {
-    @apply content-[''] absolute left-0 bottom-0 w-0 h-0.5 bg-agri-green transition-all duration-300;
+    @apply content-[''] absolute left-0 bottom-0 w-0 h-0.5 bg-agri-green dark:bg-agri-light-green transition-all duration-300;
   }
   
   .nav-link:hover::after {

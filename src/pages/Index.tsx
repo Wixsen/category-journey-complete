@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -18,12 +19,12 @@ const Index = () => {
       <Hero />
       
       {/* Categories Section */}
-      <section id="categories" className="py-16 bg-agri-beige">
+      <section id="categories" className="py-16 bg-agri-beige dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="text-sm uppercase text-agri-green font-medium tracking-wider">Discover Our Products</span>
-            <h2 className="text-3xl font-bold mt-2 mb-4">Categories</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <span className="text-sm uppercase text-agri-green dark:text-agri-light-green font-medium tracking-wider">Discover Our Products</span>
+            <h2 className="text-3xl font-bold mt-2 mb-4 text-foreground">Categories</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               "Purely Farmed, Proudly Served."
             </p>
           </div>
@@ -42,12 +43,12 @@ const Index = () => {
       </section>
       
       {/* Featured Products Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="text-sm uppercase text-agri-green font-medium tracking-wider">Handpicked For You</span>
-            <h2 className="text-3xl font-bold mt-2 mb-4">Featured Products</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <span className="text-sm uppercase text-agri-green dark:text-agri-light-green font-medium tracking-wider">Handpicked For You</span>
+            <h2 className="text-3xl font-bold mt-2 mb-4 text-foreground">Featured Products</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Discover our selection of premium agricultural products carefully selected for their quality and freshness.
             </p>
           </div>
@@ -70,7 +71,7 @@ const Index = () => {
           <div className="text-center mt-10">
             <Link 
               to="/shop" 
-              className="inline-block px-6 py-3 bg-agri-green text-white rounded-md hover:bg-agri-dark-green transition-colors"
+              className="inline-block px-6 py-3 bg-agri-green dark:bg-agri-light-green text-white rounded-md hover:bg-agri-dark-green dark:hover:bg-agri-green transition-colors"
             >
               View All Products
             </Link>
@@ -79,7 +80,7 @@ const Index = () => {
       </section>
       
       {/* Farmer Features */}
-      <section className="py-16 bg-agri-beige">
+      <section className="py-16 bg-agri-beige dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {farmerFeatures.map((feature) => (
@@ -102,7 +103,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* AI Chat Assistant */}
+      {/* AI Chat Assistant - Now a floating button */}
       <ChatWithAI standalone={true} />
       
       <Footer />
