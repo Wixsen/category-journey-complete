@@ -38,8 +38,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-medium text-gray-800 mb-1">{name}</h3>
-        <p className="text-agri-green font-semibold">₹{price.toFixed(2)}</p>
+        <h3 className="font-medium text-foreground mb-1">{name}</h3>
+        <p className="text-primary font-semibold">₹{price.toFixed(2)}</p>
       </div>
     </Link>
   );

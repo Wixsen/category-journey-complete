@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { User, Lock, Eye, EyeOff, Phone, CreditCard, Home } from 'lucide-react';
+import { User } from 'lucide-react';
 import axios from 'axios';
+import { validateField } from '@/utils/validation';
+import SignInForm from '@/components/auth/SignInForm';
+import CreateAccountForm from '@/components/auth/CreateAccountForm';
 
 interface SignInDialogProps {
   open: boolean;
@@ -19,15 +21,6 @@ interface CreateAccountData {
   address: string;
   password: string;
 }
-
-// Input validation functions
-const validatePhoneNumber = (phone: string): boolean => {
-  return /^\d{10}$/.test(phone);
-};
-
-const validateAadhar = (aadhar: string): boolean => {
-  return /^\d{12}$/.test(aadhar);
-};
 
 const SignInDialog: React.FC<SignInDialogProps> = ({ open, onOpenChange }) => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -73,19 +66,6 @@ const SignInDialog: React.FC<SignInDialogProps> = ({ open, onOpenChange }) => {
     }
   }, [createAccountData, aadhar, password, isSignIn]);
 
-  const validateField = (name: string, value: string): string => {
-    switch (name) {
-      case 'phnumber':
-        return validatePhoneNumber(value) ? '' : 'Phone number must be 10 digits';
-      case 'aadhar':
-        return validateAadhar(value) ? '' : 'Aadhar number must be 12 digits';
-      case 'password':
-        return value.length >= 6 ? '' : 'Password must be at least 6 characters';
-      default:
-        return '';
-    }
-  };
-
   const handleCreateAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
@@ -127,6 +107,14 @@ const SignInDialog: React.FC<SignInDialogProps> = ({ open, onOpenChange }) => {
     }));
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -142,7 +130,7 @@ const SignInDialog: React.FC<SignInDialogProps> = ({ open, onOpenChange }) => {
       }
       
       // Validate Aadhar
-      if (!validateAadhar(aadhar)) {
+      if (!/^\d{12}$/.test(aadhar)) {
         toast({
           title: 'Error',
           description: 'Aadhar number must be 12 digits.',
@@ -177,11 +165,11 @@ const SignInDialog: React.FC<SignInDialogProps> = ({ open, onOpenChange }) => {
       // Check validation errors
       const errors: Record<string, string> = {};
       
-      if (!validatePhoneNumber(createAccountData.phnumber)) {
+      if (!/^\d{10}$/.test(createAccountData.phnumber)) {
         errors.phnumber = 'Phone number must be 10 digits';
       }
       
-      if (!validateAadhar(createAccountData.aadhar)) {
+      if (!/^\d{12}$/.test(createAccountData.aadhar)) {
         errors.aadhar = 'Aadhar number must be 12 digits';
       }
       
@@ -250,158 +238,26 @@ const SignInDialog: React.FC<SignInDialogProps> = ({ open, onOpenChange }) => {
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          {!isSignIn && (
-            <>
-              <div className="space-y-2">
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="text"
-                    placeholder="Name"
-                    required
-                    className="pl-10"
-                    name="name"
-                    value={createAccountData.name}
-                    onChange={handleCreateAccountChange}
-                    onFocus={() => resetValidationError('name')}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    placeholder="Phone Number"
-                    required
-                    className={`pl-10 ${validationErrors.phnumber ? 'border-destructive' : ''}`}
-                    name="phnumber"
-                    value={createAccountData.phnumber}
-                    onChange={handleCreateAccountChange}
-                    onFocus={() => resetValidationError('phnumber')}
-                    maxLength={10}
-                  />
-                  {validationErrors.phnumber && (
-                    <p className="text-destructive text-xs mt-1">{validationErrors.phnumber}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    placeholder="Aadhar"
-                    required
-                    className={`pl-10 ${validationErrors.aadhar ? 'border-destructive' : ''}`}
-                    name="aadhar"
-                    value={createAccountData.aadhar}
-                    onChange={handleCreateAccountChange}
-                    onFocus={() => resetValidationError('aadhar')}
-                    maxLength={12}
-                  />
-                  {validationErrors.aadhar && (
-                    <p className="text-destructive text-xs mt-1">{validationErrors.aadhar}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="relative">
-                  <Home className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="text"
-                    placeholder="Address"
-                    required
-                    className="pl-10"
-                    name="address"
-                    value={createAccountData.address}
-                    onChange={handleCreateAccountChange}
-                    onFocus={() => resetValidationError('address')}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    required
-                    className={`pl-10 pr-10 ${validationErrors.password ? 'border-destructive' : ''}`}
-                    value={createAccountData.password}
-                    onChange={handleCreateAccountChange}
-                    name='password'
-                    onFocus={() => resetValidationError('password')}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 text-muted-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                  {validationErrors.password && (
-                    <p className="text-destructive text-xs mt-1">{validationErrors.password}</p>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-          {isSignIn && (
-            <>
-              <div className="space-y-2">
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    placeholder="Aadhar"
-                    required
-                    className={`pl-10 ${validationErrors.aadhar ? 'border-destructive' : ''}`}
-                    value={aadhar}
-                    onChange={handleAadharChange}
-                    onFocus={() => resetValidationError('aadhar')}
-                    maxLength={12}
-                  />
-                  {validationErrors.aadhar && (
-                    <p className="text-destructive text-xs mt-1">{validationErrors.aadhar}</p>
-                  )}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    required
-                    className="pl-10 pr-10"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    name='password'
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 text-muted-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-            </>
+          {!isSignIn ? (
+            <CreateAccountForm 
+              formData={createAccountData}
+              showPassword={showPassword}
+              validationErrors={validationErrors}
+              handleChange={handleCreateAccountChange}
+              togglePasswordVisibility={togglePasswordVisibility}
+              resetValidationError={resetValidationError}
+            />
+          ) : (
+            <SignInForm
+              aadhar={aadhar}
+              password={password}
+              showPassword={showPassword}
+              validationErrors={validationErrors}
+              handleAadharChange={handleAadharChange}
+              handlePasswordChange={handlePasswordChange}
+              togglePasswordVisibility={togglePasswordVisibility}
+              resetValidationError={resetValidationError}
+            />
           )}
 
           {isSignIn && (

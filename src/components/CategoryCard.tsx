@@ -15,7 +15,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ id, name, image }) => {
       <div className="overflow-hidden">
         <img src={image} alt={name} className="transition-transform" />
       </div>
-      <div className="category-title">{name}</div>
+      <div className="category-title text-foreground">{name}</div>
     </Link>
   );
 };

@@ -12,10 +12,10 @@ const Shop = () => {
       <Navbar />
       
       {/* Shop Header */}
-      <div className="bg-agri-beige py-10">
+      <div className="bg-secondary py-10">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Shop All Products</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold mb-4 text-foreground">Shop All Products</h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Browse our complete collection of fresh, sustainably grown agricultural products.
           </p>
         </div>
@@ -26,7 +26,7 @@ const Shop = () => {
         <div className="flex flex-wrap justify-center gap-4">
           <Link 
             to="/shop" 
-            className="px-4 py-2 bg-agri-green text-white rounded-md"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md"
           >
             All
           </Link>
@@ -34,7 +34,7 @@ const Shop = () => {
             <Link 
               key={category.id}
               to={`/category/${category.id}`} 
-              className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 bg-card border border-border text-foreground rounded-md hover:bg-secondary transition-colors"
             >
               {category.name}
             </Link>
@@ -43,7 +43,7 @@ const Shop = () => {
       </div>
       
       {/* Products Grid */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product) => (
