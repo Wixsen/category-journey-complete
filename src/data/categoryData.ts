@@ -43,19 +43,19 @@ export const categories: Category[] = [
     id: 'herbs',
     name: 'Herbs',
     description: 'Aromatic herbs for your kitchen',
-    image: 'https://images.unsplash.com/photo-1615485500704-8e990faba22a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    image: 'https://images2.imgbox.com/2c/d7/15Hnrks0_o.jpg',
   },
   {
     id: 'dry-fruits',
     name: 'Dry Fruits',
     description: 'Nutritious dry fruits and nuts',
-    image: 'https://images.unsplash.com/photo-1563292749-363771d6e648?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    image: 'https://images2.imgbox.com/75/02/x09OgVHR_o.jpeg',
   },
   {
     id: 'homemade',
     name: 'Homemade Goods',
     description: 'Artisanal homemade goods',
-    image: 'https://images.unsplash.com/photo-1608797178998-ed6f91ebf4a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    image: 'https://images2.imgbox.com/b6/d8/XL458dpi_o.jpg',
   },
 ];
 
