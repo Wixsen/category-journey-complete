@@ -66,7 +66,7 @@ const CategoryPage = () => {
       </div>
       
       {/* Products Section */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-dark">
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h2 className="text-2xl font-bold">{category.name} Products</h2>
