@@ -24,14 +24,14 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
       role: 'assistant', 
       content: productName 
         ? `Hello! I'm here to help you with any questions about ${productName}. What would you like to know?` 
-        : 'Hello! I'm the AgriRoad AI assistant. How can I help you today?' 
+        : 'Hello! I\'m the AgriRoad AI assistant. How can I help you today?' 
     }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim() === '') return;
     
     // Add user message
@@ -39,45 +39,43 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
     setInput('');
     setIsLoading(true);
     
-    // Simulate AI response with some context awareness
-    setTimeout(() => {
-      let response = "I'm not sure about that. Can you provide more details?";
+    try {
+      // Call the external API endpoint
+      const response = await fetch(`https://agriroad-chat-tybs.onrender.com/getresponse?input=${encodeURIComponent(input)}`);
       
-      const userQuery = input.toLowerCase();
+      if (!response.ok) {
+        throw new Error('Failed to get response from AI service');
+      }
       
+      const data = await response.text();
+      
+      // Add context awareness for product-specific questions
+      let finalResponse = data;
+      
+      // If we have product context, enhance the response with product details
       if (productName && categoryName) {
-        if (userQuery.includes('price') || userQuery.includes('cost')) {
-          response = `${productName} is competitively priced. You can see the current price listed on the product page.`;
-        } else if (userQuery.includes('organic') || userQuery.includes('pesticide')) {
-          response = `Yes, our ${productName} is organically grown without synthetic pesticides.`;
-        } else if (userQuery.includes('farmer') || userQuery.includes('grown')) {
-          response = `${productName} is grown by ${farmerName || 'local farmers'} who follow sustainable farming practices.`;
-        } else if (userQuery.includes('delivery') || userQuery.includes('shipping')) {
-          response = `We offer fast delivery for ${productName} and all our ${categoryName}. Typically products are delivered within 2-3 business days.`;
-        } else if (userQuery.includes('quality') || userQuery.includes('fresh')) {
-          response = `Our ${productName} is carefully selected for freshness and quality. We guarantee farm-to-table freshness!`;
-        } else {
-          response = `Thank you for your question about ${productName}. Our ${categoryName} products are sourced directly from farmers and meet high quality standards. Is there anything specific you'd like to know?`;
+        const userQuery = input.toLowerCase();
+        if (userQuery.includes(productName.toLowerCase()) || 
+            userQuery.includes('this product') || 
+            userQuery.includes('it')) {
+          finalResponse += `\n\nThis information is about ${productName} from our ${categoryName} selection.`;
         }
-      } else {
-        if (userQuery.includes('hello') || userQuery.includes('hi')) {
-          response = "Hello! How can I assist you with your shopping today?";
-        } else if (userQuery.includes('help')) {
-          response = "I can help you with information about our products, delivery options, and farmers. What would you like to know?";
-        } else if (userQuery.includes('delivery') || userQuery.includes('shipping')) {
-          response = "We typically deliver within 2-3 business days. Express delivery is available in select areas.";
-        } else if (userQuery.includes('payment')) {
-          response = "We accept all major credit cards, UPI, and cash on delivery in select areas.";
-        } else if (userQuery.includes('organic')) {
-          response = "Yes, we offer a wide range of certified organic products. You can filter for organic items in our shop section.";
-        } else if (userQuery.includes('farmer') || userQuery.includes('producer')) {
-          response = "We partner with over 1,000 farmers across the country who follow sustainable farming practices.";
+        
+        if (farmerName && (userQuery.includes('farmer') || userQuery.includes('who grows'))) {
+          finalResponse += ` ${productName} is grown by ${farmerName}.`;
         }
       }
       
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: finalResponse }]);
+    } catch (error) {
+      console.error('Error fetching AI response:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Sorry, I encountered an issue while processing your request. Please try again later.' 
+      }]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
