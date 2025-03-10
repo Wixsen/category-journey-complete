@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React from 'react';
+import { MessageSquare } from 'lucide-react';
 import ChatWithAI from '@/components/ChatWithAI';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface ProductChatSectionProps {
   productName: string;
@@ -9,36 +10,30 @@ interface ProductChatSectionProps {
   farmerName: string;
 }
 
-const ProductChatSection: React.FC<ProductChatSectionProps> = ({
-  productName,
+const ProductChatSection: React.FC<ProductChatSectionProps> = ({ 
+  productName, 
   categoryName,
   farmerName
 }) => {
-  const [showChat, setShowChat] = useState(false);
-
-  const toggleChat = () => {
-    setShowChat(!showChat);
-  };
-
   return (
-    <div className="mt-6">
-      <Button 
-        variant="outline" 
-        className="w-full border-agri-green text-agri-green hover:bg-agri-green hover:text-white dark:border-agri-light-green dark:text-agri-light-green dark:hover:bg-agri-light-green dark:hover:text-background"
-        onClick={toggleChat}
-      >
-        {showChat ? "Close Chat" : "Chat with AI about this product"}
-      </Button>
-      
-      {showChat && (
-        <div className="mt-4 p-4 border border-border rounded-lg bg-card">
-          <ChatWithAI 
-            productName={productName} 
-            categoryName={categoryName} 
-            farmerName={farmerName} 
-          />
-        </div>
-      )}
+    <div className="mb-6">
+      <Accordion type="single" collapsible className="border rounded-md">
+        <AccordionItem value="chat-with-ai">
+          <AccordionTrigger className="hover:bg-muted px-4">
+            <div className="flex items-center text-foreground">
+              <MessageSquare className="h-5 w-5 mr-2 text-agri-green dark:text-agri-light-green" />
+              <span>Ask AI about this product</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 pt-2">
+            <ChatWithAI 
+              productName={productName} 
+              categoryName={categoryName}
+              farmerName={farmerName}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };

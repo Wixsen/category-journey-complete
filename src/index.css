@@ -128,4 +128,25 @@
   .nav-link:hover::after {
     @apply w-full;
   }
+  
+  /* Enhanced dark mode text visibility */
+  .dark .product-name {
+    @apply text-gray-100;
+  }
+  
+  .dark .product-price {
+    @apply text-agri-light-green;
+  }
+  
+  .dark .category-title {
+    @apply text-gray-100;
+  }
+  
+  .dark .breadcrumb-item {
+    @apply text-gray-300;
+  }
+  
+  .dark .text-muted-foreground {
+    @apply text-gray-300;
+  }
 }

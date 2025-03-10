@@ -7,6 +7,7 @@ import ProductFeatures from './ProductFeatures';
 import ProductInfo from './product/ProductInfo';
 import AddToCartSection from './product/AddToCartSection';
 import ProductChatSection from './product/ProductChatSection';
+import QRCode from './QRCode';
 
 interface ProductDetailsProps {
   product: Product;
@@ -26,6 +27,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   const [quantity, setQuantity] = useState(1);
   const [selectedFarmer, setSelectedFarmer] = useState(product.farmer);
   const [showFarmerProfile, setShowFarmerProfile] = useState(false);
+  const [showFarmerQR, setShowFarmerQR] = useState(false);
 
   const handleIncreaseQuantity = () => {
     if (quantity < product.stock) {
@@ -47,10 +49,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     setShowFarmerProfile(!showFarmerProfile);
   };
 
+  const toggleFarmerQR = () => {
+    setShowFarmerQR(!showFarmerQR);
+  };
+
   const handleFarmerChange = (farmer: string) => {
     setSelectedFarmer(farmer);
     setShowFarmerProfile(true);
   };
+
+  // Generate a unique QR URL for the farmer
+  const farmerQRUrl = `https://agriroad-farmer.netlify.app/profile?name=${encodeURIComponent(selectedFarmer)}&product=${encodeURIComponent(product.name)}`;
 
   return (
     <div className="animate-fade-up">
@@ -71,6 +80,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       {showFarmerProfile && (
         <div className="mb-6">
           <FarmerProfile farmerName={selectedFarmer} />
+          <div className="mt-4 flex justify-end">
+            <button 
+              onClick={toggleFarmerQR}
+              className="text-sm flex items-center text-agri-green hover:text-agri-dark-green dark:text-agri-light-green dark:hover:text-agri-green"
+            >
+              {showFarmerQR ? 'Hide QR Code' : 'Show Farmer QR Code'}
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Farmer QR Code */}
+      {showFarmerQR && (
+        <div className="mb-6">
+          <QRCode 
+            url={farmerQRUrl}
+            title={`Connect with ${selectedFarmer}`}
+            description={`Scan to learn more about ${selectedFarmer} and their farming practices for ${product.name}`}
+          />
         </div>
       )}
       

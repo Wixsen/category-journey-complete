@@ -40,7 +40,7 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
     setIsLoading(true);
     
     try {
-      // Call the external API endpoint
+      // Call the external API endpoint with the correct URL
       const response = await fetch(`https://agriroad-chat-tybs.onrender.com/getresponse?input=${encodeURIComponent(input)}`);
       
       if (!response.ok) {
