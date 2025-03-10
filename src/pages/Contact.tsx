@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -138,7 +137,7 @@ const Contact = () => {
               <div className="mt-8 rounded-lg overflow-hidden h-64 border border-border">
                 <iframe
                   title="AgriRoad Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.7462556927546!2d-122.41941639999999!3d37.774929700000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858087667f676f%3A0x399e40be3e21bc7!2sSan%20Francisco%2C%20CA%2C%20USA!5e0!3m2!1sen!2suk!4v1707391808926!5m2!1sen!2suk"
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d18046.22467719932!2d91.75681125040873!3d26.169857205663437!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x375a591877a5854f%3A0xa5a4ae0547b49d1f!2sNovotel%20Guwahati%20GS%20Road!5e0!3m2!1sen!2suk!4v1741610047586!5m2!1sen!2suk"
                   width="100%"
                   height="100%"
                   frameBorder="0"
