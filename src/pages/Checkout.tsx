@@ -98,20 +98,20 @@ const Checkout = () => {
             ))}
           </div>
           <div className="flex justify-between mt-2 text-sm">
-            <span>Cart</span>
-            <span>Shipping</span>
-            <span>Payment</span>
-            <span>Confirm</span>
+            <span className="text-foreground">Cart</span>
+            <span className="text-foreground">Shipping</span>
+            <span className="text-foreground">Payment</span>
+            <span className="text-foreground">Confirm</span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm">
+            <form onSubmit={handleSubmit} className="bg-card shadow-sm p-6 rounded-lg border border-border">
               {activeStep === 1 && (
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                  <h2 className="text-xl font-semibold mb-4 text-foreground">Order Summary</h2>
                   <div className="space-y-4 max-h-[400px] overflow-y-auto">
                     {items.map(item => (
                       <div key={item.id} className="flex items-center border-b pb-4">
@@ -121,9 +121,9 @@ const Checkout = () => {
                           className="w-16 h-16 object-cover rounded mr-4"
                         />
                         <div className="flex-1">
-                          <h3 className="font-medium">{item.name}</h3>
-                          <p className="text-gray-600">Quantity: {item.quantity}</p>
-                          <p className="text-agri-green">₹{(item.price * item.quantity).toFixed(2)}</p>
+                          <h3 className="font-medium text-foreground">{item.name}</h3>
+                          <p className="text-muted-foreground">Quantity: {item.quantity}</p>
+                          <p className="text-agri-green dark:text-agri-light-green">₹{(item.price * item.quantity).toFixed(2)}</p>
                         </div>
                       </div>
                     ))}
@@ -133,13 +133,13 @@ const Checkout = () => {
 
               {activeStep === 2 && (
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold mb-4 flex items-center">
-                    <MapPin className="mr-2 h-5 w-5 text-agri-green" />
+                  <h2 className="text-xl font-semibold mb-4 flex items-center text-foreground">
+                    <MapPin className="mr-2 h-5 w-5 text-agri-green dark:text-agri-light-green" />
                     Shipping Information
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="fullName" className="block text-sm font-medium text-foreground mb-1">
                         Full Name
                       </label>
                       <Input 
@@ -152,7 +152,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
                         Email
                       </label>
                       <Input 
@@ -166,7 +166,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-1">
                         Phone Number
                       </label>
                       <Input 
@@ -179,7 +179,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="address" className="block text-sm font-medium text-foreground mb-1">
                         Address
                       </label>
                       <Input 
@@ -192,7 +192,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="city" className="block text-sm font-medium text-foreground mb-1">
                         City
                       </label>
                       <Input 
@@ -205,7 +205,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="state" className="block text-sm font-medium text-foreground mb-1">
                         State
                       </label>
                       <Input 
@@ -218,7 +218,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="pincode" className="block text-sm font-medium text-foreground mb-1">
                         Pincode
                       </label>
                       <Input 
@@ -236,13 +236,13 @@ const Checkout = () => {
 
               {activeStep === 3 && (
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold mb-4 flex items-center">
-                    <CreditCard className="mr-2 h-5 w-5 text-agri-green" />
+                  <h2 className="text-xl font-semibold mb-4 flex items-center text-foreground">
+                    <CreditCard className="mr-2 h-5 w-5 text-agri-green dark:text-agri-light-green" />
                     Payment Information
                   </h2>
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="cardNumber" className="block text-sm font-medium text-foreground mb-1">
                         Card Number
                       </label>
                       <Input 
@@ -255,7 +255,7 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="cardName" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="cardName" className="block text-sm font-medium text-foreground mb-1">
                         Name on Card
                       </label>
                       <Input 
@@ -269,7 +269,7 @@ const Checkout = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="expiryDate" className="block text-sm font-medium text-foreground mb-1">
                           Expiry Date
                         </label>
                         <Input 
@@ -282,7 +282,7 @@ const Checkout = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="cvv" className="block text-sm font-medium text-foreground mb-1">
                           CVV
                         </label>
                         <Input 
@@ -303,11 +303,11 @@ const Checkout = () => {
 
               {activeStep === 4 && (
                 <div className="space-y-6">
-                  <h2 className="text-xl font-semibold mb-4">Order Confirmation</h2>
+                  <h2 className="text-xl font-semibold mb-4 text-foreground">Order Confirmation</h2>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="font-medium text-gray-700">Shipping Address</h3>
-                      <p className="text-gray-600">
+                      <h3 className="font-medium text-foreground">Shipping Address</h3>
+                      <p className="text-muted-foreground">
                         {formData.fullName}<br />
                         {formData.address}<br />
                         {formData.city}, {formData.state} {formData.pincode}<br />
@@ -315,14 +315,14 @@ const Checkout = () => {
                       </p>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-700">Payment Method</h3>
-                      <p className="text-gray-600">
+                      <h3 className="font-medium text-foreground">Payment Method</h3>
+                      <p className="text-muted-foreground">
                         Card ending with {formData.cardNumber.slice(-4)}
                       </p>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-700">Items</h3>
-                      <ul className="list-disc list-inside text-gray-600">
+                      <h3 className="font-medium text-foreground">Items</h3>
+                      <ul className="list-disc list-inside text-muted-foreground">
                         {items.map(item => (
                           <li key={item.id}>
                             {item.name} x {item.quantity} - ₹{(item.price * item.quantity).toFixed(2)}
@@ -344,7 +344,7 @@ const Checkout = () => {
                 </Button>
                 <Button 
                   type="submit" 
-                  className="bg-agri-green hover:bg-agri-dark-green"
+                  className="bg-agri-green hover:bg-agri-dark-green text-white"
                 >
                   {activeStep < 4 ? "Continue" : "Place Order"}
                 </Button>
@@ -354,25 +354,25 @@ const Checkout = () => {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <div className="bg-card shadow-sm p-6 rounded-lg border border-border">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">Order Summary</h2>
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>₹{totalPrice.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-foreground">₹{totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Shipping</span>
-                  <span>₹50.00</span>
+                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-foreground">₹50.00</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span>₹{(totalPrice * 0.05).toFixed(2)}</span>
+                  <span className="text-muted-foreground">Tax</span>
+                  <span className="text-foreground">₹{(totalPrice * 0.05).toFixed(2)}</span>
                 </div>
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-bold">
-                    <span>Total</span>
-                    <span className="text-agri-green">
+                    <span className="text-foreground">Total</span>
+                    <span className="text-agri-green dark:text-agri-light-green">
                       ₹{(totalPrice + 50 + totalPrice * 0.05).toFixed(2)}
                     </span>
                   </div>
@@ -380,12 +380,12 @@ const Checkout = () => {
               </div>
 
               <div className="mt-6 space-y-4">
-                <div className="flex items-center text-sm text-gray-600">
-                  <Truck className="h-4 w-4 mr-2 text-agri-green" />
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Truck className="h-4 w-4 mr-2 text-agri-green dark:text-agri-light-green" />
                   <span>Free shipping on orders above ₹500</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <Check className="h-4 w-4 mr-2 text-agri-green" />
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 mr-2 text-agri-green dark:text-agri-light-green" />
                   <span>100% organic produce guaranteed</span>
                 </div>
               </div>

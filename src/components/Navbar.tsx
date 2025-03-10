@@ -77,7 +77,10 @@ const Navbar = () => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="link" className={`nav-link p-0 ${isActive('/join-as-seller') || isActive('/join-as-delivery') ? 'text-agri-green dark:text-agri-light-green' : 'text-foreground'}`}>
+              <Button 
+                variant="link" 
+                className={`p-0 ${isActive('/join-as-seller') || isActive('/join-as-delivery') ? 'text-agri-green dark:text-agri-light-green' : 'text-foreground'}`}
+              >
                 JOIN US
               </Button>
             </DropdownMenuTrigger>
