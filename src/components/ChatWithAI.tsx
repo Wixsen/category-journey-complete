@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
-import { Send, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, X, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card } from '@/components/ui/card';
 
 export interface ChatWithAIProps {
   productName?: string;
@@ -13,165 +14,204 @@ export interface ChatWithAIProps {
 
 const ChatWithAI: React.FC<ChatWithAIProps> = ({ 
   productName, 
-  categoryName, 
+  categoryName,
   farmerName,
   standalone = false 
 }) => {
-  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([
     { 
-      text: standalone 
-        ? "Hello! I'm your AgriRoad AI assistant. How can I help you today?"
-        : `Hello! I'm your AgriRoad AI assistant. Ask me anything about ${productName || 'our products'} from ${farmerName || 'our farmers'}.`, 
-      isUser: false 
+      role: 'assistant', 
+      content: productName 
+        ? `Hello! I'm here to help you with any questions about ${productName}. What would you like to know?` 
+        : 'Hello! I'm the AgriRoad AI assistant. How can I help you today?' 
     }
   ]);
-  const [inputText, setInputText] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
-
-    // Add user message
-    setMessages(prev => [...prev, { text: inputText, isUser: true }]);
+  const handleSend = () => {
+    if (input.trim() === '') return;
     
-    // Simulate AI thinking
+    // Add user message
+    setMessages(prev => [...prev, { role: 'user', content: input }]);
+    setInput('');
+    setIsLoading(true);
+    
+    // Simulate AI response with some context awareness
     setTimeout(() => {
-      // Add AI response based on context
-      let response = '';
-      const userQuestion = inputText.toLowerCase();
+      let response = "I'm not sure about that. Can you provide more details?";
       
-      if (userQuestion.includes('organic') && productName) {
-        response = `Yes, ${productName} from ${farmerName || 'our farmers'} is grown using organic farming practices with no synthetic pesticides.`;
-      } else if (userQuestion.includes('price')) {
-        response = `Our pricing is competitive and reflects the quality and sustainable practices used to grow ${productName || 'our products'}.`;
-      } else if (userQuestion.includes('delivery')) {
-        response = 'We offer fast and reliable delivery services. Most orders are delivered within 1-2 business days.';
-      } else if (userQuestion.includes('farmer') && farmerName) {
-        response = `${farmerName} is one of our trusted farmers who has been with AgriRoad for several years. They follow sustainable farming practices and are known for high-quality produce.`;
+      const userQuery = input.toLowerCase();
+      
+      if (productName && categoryName) {
+        if (userQuery.includes('price') || userQuery.includes('cost')) {
+          response = `${productName} is competitively priced. You can see the current price listed on the product page.`;
+        } else if (userQuery.includes('organic') || userQuery.includes('pesticide')) {
+          response = `Yes, our ${productName} is organically grown without synthetic pesticides.`;
+        } else if (userQuery.includes('farmer') || userQuery.includes('grown')) {
+          response = `${productName} is grown by ${farmerName || 'local farmers'} who follow sustainable farming practices.`;
+        } else if (userQuery.includes('delivery') || userQuery.includes('shipping')) {
+          response = `We offer fast delivery for ${productName} and all our ${categoryName}. Typically products are delivered within 2-3 business days.`;
+        } else if (userQuery.includes('quality') || userQuery.includes('fresh')) {
+          response = `Our ${productName} is carefully selected for freshness and quality. We guarantee farm-to-table freshness!`;
+        } else {
+          response = `Thank you for your question about ${productName}. Our ${categoryName} products are sourced directly from farmers and meet high quality standards. Is there anything specific you'd like to know?`;
+        }
       } else {
-        response = `Thanks for your question about ${productName || categoryName || 'our products'}! Our team is working on providing you with detailed information. In the meantime, feel free to ask anything else about our products or services.`;
+        if (userQuery.includes('hello') || userQuery.includes('hi')) {
+          response = "Hello! How can I assist you with your shopping today?";
+        } else if (userQuery.includes('help')) {
+          response = "I can help you with information about our products, delivery options, and farmers. What would you like to know?";
+        } else if (userQuery.includes('delivery') || userQuery.includes('shipping')) {
+          response = "We typically deliver within 2-3 business days. Express delivery is available in select areas.";
+        } else if (userQuery.includes('payment')) {
+          response = "We accept all major credit cards, UPI, and cash on delivery in select areas.";
+        } else if (userQuery.includes('organic')) {
+          response = "Yes, we offer a wide range of certified organic products. You can filter for organic items in our shop section.";
+        } else if (userQuery.includes('farmer') || userQuery.includes('producer')) {
+          response = "We partner with over 1,000 farmers across the country who follow sustainable farming practices.";
+        }
       }
       
-      setMessages(prev => [...prev, { text: response, isUser: false }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      setIsLoading(false);
     }, 1000);
-    
-    setInputText('');
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSendMessage();
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
-  const toggleChat = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    // Scroll to bottom when messages change
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-  // For standalone mode on home page
+  // If this is a standalone floating button
   if (standalone) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-5 right-5 z-40">
         {isOpen ? (
-          <div className="bg-white dark:bg-card w-80 rounded-lg shadow-lg overflow-hidden flex flex-col border border-border">
-            <div className="bg-agri-green p-3 text-white flex justify-between items-center">
-              <span className="font-medium">AgriRoad AI Assistant</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleChat}
-                className="h-6 w-6 p-0 text-white hover:bg-agri-dark-green"
-              >
+          <Card className="w-80 sm:w-96 h-96 flex flex-col shadow-lg border border-border">
+            <div className="p-3 border-b border-border bg-muted flex justify-between items-center">
+              <h3 className="font-semibold text-foreground">AgriRoad Assistant</h3>
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             
-            <div className="h-64 overflow-y-auto p-3 space-y-4 bg-gray-50 dark:bg-card">
+            <div className="flex-1 overflow-y-auto p-3 space-y-4">
               {messages.map((message, index) => (
                 <div 
                   key={index} 
-                  className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div 
-                    className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${
-                      message.isUser 
-                        ? 'bg-primary text-primary-foreground' 
+                    className={`max-w-[80%] p-3 rounded-lg ${
+                      message.role === 'user' 
+                        ? 'bg-agri-green text-white' 
                         : 'bg-muted text-foreground'
                     }`}
                   >
-                    {message.text}
+                    {message.content}
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="max-w-[80%] p-3 rounded-lg bg-muted text-foreground">
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
             
-            <div className="p-3 bg-white dark:bg-card border-t border-border flex">
-              <Input
-                className="flex-1 mr-2 text-sm h-9"
-                placeholder="Type your message..."
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
-              />
-              <Button 
-                size="sm"
-                onClick={handleSendMessage}
-                className="bg-agri-green hover:bg-agri-dark-green text-white h-9 w-9 p-0"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+            <div className="p-3 border-t border-border">
+              <div className="flex gap-2">
+                <Textarea 
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Type your message..."
+                  className="resize-none"
+                  rows={1}
+                />
+                <Button size="icon" onClick={handleSend} disabled={input.trim() === ''}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-          </div>
+          </Card>
         ) : (
-          <Button
-            onClick={toggleChat}
-            className="h-14 w-14 rounded-full bg-agri-green hover:bg-agri-dark-green text-white shadow-lg flex items-center justify-center"
+          <Button 
+            onClick={() => setIsOpen(true)} 
+            className="rounded-full w-12 h-12 bg-agri-green hover:bg-agri-dark-green text-white shadow-lg"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <MessageSquare className="h-5 w-5" />
           </Button>
         )}
       </div>
     );
   }
 
-  // For embedded mode on product pages
+  // For embedded chat (in product pages, etc.)
   return (
-    <div className="w-full h-[300px] flex flex-col">
-      <div className="flex-1 overflow-y-auto mb-4 space-y-4 p-2">
+    <div className="flex flex-col h-[300px] border border-border rounded-md overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-3 space-y-4">
         {messages.map((message, index) => (
           <div 
             key={index} 
-            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div 
-              className={`max-w-[75%] rounded-lg px-4 py-2 ${
-                message.isUser 
-                  ? 'bg-primary text-primary-foreground' 
+              className={`max-w-[80%] p-3 rounded-lg ${
+                message.role === 'user' 
+                  ? 'bg-agri-green text-white' 
                   : 'bg-muted text-foreground'
               }`}
             >
-              {message.text}
+              {message.content}
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="max-w-[80%] p-3 rounded-lg bg-muted text-foreground">
+              <div className="flex space-x-2">
+                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
       
-      <div className="flex">
-        <Input
-          className="flex-1 mr-2"
-          placeholder="Type your question..."
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-        <Button 
-          onClick={handleSendMessage}
-          className="bg-primary hover:bg-primary/90"
-        >
-          <Send className="h-4 w-4" />
-        </Button>
+      <div className="p-3 border-t border-border">
+        <div className="flex gap-2">
+          <Textarea 
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message..."
+            className="resize-none"
+            rows={1}
+          />
+          <Button size="icon" onClick={handleSend} disabled={input.trim() === ''}>
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

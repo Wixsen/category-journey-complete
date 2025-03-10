@@ -1,13 +1,19 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, LogOut } from 'lucide-react';
+import { Search, ShoppingCart, LogOut, User2, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import SearchDialog from './SearchDialog';
 import CartDialog from './CartDialog';
 import SignInDialog from './SignInDialog';
 import { ThemeToggle } from './ThemeToggle';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const location = useLocation();
@@ -68,6 +74,38 @@ const Navbar = () => {
           <Link to="/contact" className={`nav-link ${isActive('/contact') ? 'text-agri-green' : ''}`}>
             CONTACT
           </Link>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="link" className="nav-link p-0">
+                JOIN US
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <a 
+                  href="http://agriroad-farmer.netlify.app" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center cursor-pointer"
+                >
+                  <User2 className="mr-2 h-4 w-4" />
+                  <span>Join as Seller</span>
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a 
+                  href="http://agriroad-deliveryportal.netlify.app" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center cursor-pointer"
+                >
+                  <Truck className="mr-2 h-4 w-4" />
+                  <span>Join as Delivery</span>
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex items-center space-x-4">
