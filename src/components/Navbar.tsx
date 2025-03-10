@@ -61,48 +61,44 @@ const Navbar = () => {
     <header className="w-full bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-          <h1 className="text-xl sm:text-2xl font-bold text-agri-green">AgriRoad</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-agri-green dark:text-agri-light-green">AgriRoad</h1>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className={`nav-link ${isActive('/') ? 'text-agri-green' : ''}`}>
+          <Link to="/" className={`nav-link ${isActive('/') ? 'text-agri-green dark:text-agri-light-green' : 'text-foreground'}`}>
             HOME
           </Link>
-          <Link to="/shop" className={`nav-link ${isActive('/shop') ? 'text-agri-green' : ''}`}>
+          <Link to="/shop" className={`nav-link ${isActive('/shop') ? 'text-agri-green dark:text-agri-light-green' : 'text-foreground'}`}>
             SHOP
           </Link>
-          <Link to="/contact" className={`nav-link ${isActive('/contact') ? 'text-agri-green' : ''}`}>
+          <Link to="/contact" className={`nav-link ${isActive('/contact') ? 'text-agri-green dark:text-agri-light-green' : 'text-foreground'}`}>
             CONTACT
           </Link>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="link" className="nav-link p-0">
+              <Button variant="link" className={`nav-link p-0 ${isActive('/join-as-seller') || isActive('/join-as-delivery') ? 'text-agri-green dark:text-agri-light-green' : 'text-foreground'}`}>
                 JOIN US
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-48 bg-background border-border">
               <DropdownMenuItem asChild>
-                <a 
-                  href="http://agriroad-farmer.netlify.app" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  to="/join-as-seller"
                   className="flex items-center cursor-pointer"
                 >
                   <User2 className="mr-2 h-4 w-4" />
                   <span>Join as Seller</span>
-                </a>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <a 
-                  href="http://agriroad-deliveryportal.netlify.app" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  to="/join-as-delivery" 
                   className="flex items-center cursor-pointer"
                 >
                   <Truck className="mr-2 h-4 w-4" />
                   <span>Join as Delivery</span>
-                </a>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -114,7 +110,7 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-foreground hover:text-agri-green"
+            className="text-foreground hover:text-agri-green dark:hover:text-agri-light-green"
             onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" />
@@ -123,12 +119,12 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-foreground hover:text-agri-green relative"
+            className="text-foreground hover:text-agri-green dark:hover:text-agri-light-green relative"
             onClick={() => setCartOpen(true)}
           >
             <ShoppingCart className="h-5 w-5" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-agri-green text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-agri-green dark:bg-agri-light-green text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {totalItems}
               </span>
             )}
@@ -145,7 +141,7 @@ const Navbar = () => {
           ) : (
             <Button
               variant="default"
-              className="bg-agri-green hover:bg-agri-dark-green text-white transition-colors"
+              className="bg-agri-green hover:bg-agri-dark-green dark:bg-agri-light-green dark:hover:bg-agri-green text-white transition-colors"
               onClick={() => setSignInOpen(true)}
             >
               Sign In

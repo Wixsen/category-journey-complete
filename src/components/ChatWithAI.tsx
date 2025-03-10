@@ -114,7 +114,7 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
                   <div 
                     className={`max-w-[80%] p-3 rounded-lg ${
                       message.role === 'user' 
-                        ? 'bg-agri-green text-white' 
+                        ? 'bg-agri-green dark:bg-agri-light-green text-white' 
                         : 'bg-muted text-foreground'
                     }`}
                   >
@@ -155,7 +155,7 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
         ) : (
           <Button 
             onClick={() => setIsOpen(true)} 
-            className="rounded-full w-12 h-12 bg-agri-green hover:bg-agri-dark-green text-white shadow-lg"
+            className="rounded-full w-12 h-12 bg-agri-green hover:bg-agri-dark-green dark:bg-agri-light-green dark:hover:bg-agri-green text-white shadow-lg"
           >
             <MessageSquare className="h-5 w-5" />
           </Button>
@@ -176,7 +176,7 @@ const ChatWithAI: React.FC<ChatWithAIProps> = ({
             <div 
               className={`max-w-[80%] p-3 rounded-lg ${
                 message.role === 'user' 
-                  ? 'bg-agri-green text-white' 
+                  ? 'bg-agri-green dark:bg-agri-light-green text-white' 
                   : 'bg-muted text-foreground'
               }`}
             >

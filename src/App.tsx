@@ -11,8 +11,11 @@ import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
+import JoinAsSeller from "./pages/JoinAsSeller";
+import JoinAsDelivery from "./pages/JoinAsDelivery";
 import { CartProvider } from "./contexts/CartContext";
 import { ThemeProvider } from "./components/ThemeProvider";
+import ChatWithAI from "./components/ChatWithAI";
 
 const queryClient = new QueryClient();
 
@@ -31,8 +34,11 @@ const App = () => (
               <Route path="/category/:categoryId" element={<CategoryPage />} />
               <Route path="/product/:categoryId/:productId" element={<ProductPage />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/join-as-seller" element={<JoinAsSeller />} />
+              <Route path="/join-as-delivery" element={<JoinAsDelivery />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <ChatWithAI standalone={true} />
           </BrowserRouter>
         </CartProvider>
       </TooltipProvider>
